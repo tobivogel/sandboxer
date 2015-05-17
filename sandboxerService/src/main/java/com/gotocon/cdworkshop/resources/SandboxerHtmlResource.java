@@ -36,8 +36,8 @@ public class SandboxerHtmlResource {
         templateData.put("versionNumber", versionNumber);
 
         final ArrayList<Integer> servicePorts = new ArrayList();
-        servicePorts.add(8052);
-        servicePorts.add(8054);
+        servicePorts.add(8092);
+        servicePorts.add(8094);
         templateData.put("servicePorts", servicePorts);
 
         return new FreemarkerView("sandboxer", templateData);

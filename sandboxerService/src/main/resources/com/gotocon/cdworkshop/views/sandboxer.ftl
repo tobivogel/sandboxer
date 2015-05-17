@@ -22,9 +22,16 @@
     <div>
         see the service ports afterwards:
         <#list templateData.servicePorts as servicePort>
-            <p>
-                Service Port: ${servicePort}
-            </p>
+            <table>
+                <tr>
+                    <td>Service Port:</td>
+                    <td>${servicePort?c}</td>
+                </tr>
+                <tr>
+                    <td>HTML Content:</td>
+                    <td><iframe src="http://localhost:${servicePort?c}/html" width="300px", height="300px"></iframe></td>
+                </tr>
+            </table>
         </#list>
     </div>
 </body>
