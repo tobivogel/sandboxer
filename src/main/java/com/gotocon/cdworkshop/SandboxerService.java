@@ -1,15 +1,16 @@
 package com.gotocon.cdworkshop;
 
-import com.yammer.dropwizard.Service;
-import com.yammer.dropwizard.config.Bootstrap;
-import com.yammer.dropwizard.config.Environment;
-import com.yammer.dropwizard.views.ViewBundle;
 import com.gotocon.cdworkshop.configuration.SandboxerServiceConfiguration;
 import com.gotocon.cdworkshop.filters.LoggingFilter;
 import com.gotocon.cdworkshop.health.StatusHealthCheck;
 import com.gotocon.cdworkshop.logging.DropwizardLoggerFactory;
-import com.gotocon.cdworkshop.resources.SandboxerHtmlResource;
-import com.gotocon.cdworkshop.resources.SandboxerJsonResource;
+import com.gotocon.cdworkshop.resources.ExternalServiceResource;
+import com.sun.jersey.api.client.Client;
+import com.yammer.dropwizard.Service;
+import com.yammer.dropwizard.client.JerseyClientBuilder;
+import com.yammer.dropwizard.config.Bootstrap;
+import com.yammer.dropwizard.config.Environment;
+import com.yammer.dropwizard.views.ViewBundle;
 
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
@@ -29,13 +30,12 @@ public class SandboxerService extends Service<SandboxerServiceConfiguration> {
     public void run(SandboxerServiceConfiguration configuration, Environment environment) throws Exception {
         DropwizardLoggerFactory.createFromDropwizardConfiguration("ServiceLoggingContext", configuration.getLoggingConfig());
 
-        environment.addResource(new SandboxerJsonResource());
-        environment.addResource(new SandboxerHtmlResource(configuration));
-
         environment.addHealthCheck(new StatusHealthCheck(configuration));
 
-        environment.addFilter(new LoggingFilter(), baseUrlFor(SandboxerJsonResource.class));
-        environment.addFilter(new LoggingFilter(), baseUrlFor(SandboxerHtmlResource.class));
+        final Client client = new JerseyClientBuilder().using(environment).using(configuration.getJerseyClientConfiguration()).build();
+        environment.addResource(new ExternalServiceResource(client, configuration));
+
+        environment.addFilter(new LoggingFilter(), baseUrlFor(ExternalServiceResource.class));
     }
 
     private String baseUrlFor(Class resource) {
