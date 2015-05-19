@@ -7,6 +7,7 @@ import com.gotocon.cdworkshop.logging.DropwizardLoggerFactory;
 import com.gotocon.cdworkshop.resources.ExternalServiceResource;
 import com.sun.jersey.api.client.Client;
 import com.yammer.dropwizard.Service;
+import com.yammer.dropwizard.assets.AssetsBundle;
 import com.yammer.dropwizard.client.JerseyClientBuilder;
 import com.yammer.dropwizard.config.Bootstrap;
 import com.yammer.dropwizard.config.Environment;
@@ -24,6 +25,7 @@ public class SandboxerService extends Service<SandboxerServiceConfiguration> {
     public void initialize(Bootstrap<SandboxerServiceConfiguration> bootstrap) {
         bootstrap.setName("sandboxer-service");
         bootstrap.addBundle(new ViewBundle());
+        bootstrap.addBundle(new AssetsBundle("/com/gotocon/cdworkshop/assets", "/assets"));
     }
 
     @Override

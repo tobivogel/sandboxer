@@ -1,0 +1,10 @@
+#client-blocks {
+    display: block;
+    width: 95%;
+}
+
+.client-block {
+    float: left;
+    margin: 10px;
+    padding: 10px;
+}

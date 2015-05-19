@@ -23,6 +23,10 @@ public class SandboxerServiceConfiguration extends Configuration {
     @NotNull
     private JerseyClientConfiguration httpClient = new JerseyClientConfiguration();
 
+    @NotEmpty
+    @JsonProperty("clientPorts")
+    private Integer[] clientPorts = new Integer[0];
+
     @JsonProperty("httpClient")
     public JerseyClientConfiguration getJerseyClientConfiguration() {
         return httpClient;
@@ -36,4 +40,6 @@ public class SandboxerServiceConfiguration extends Configuration {
     public CustomDropwizardLoggingConfiguration getLoggingConfig() {
         return loggingConfig;
     }
+
+    public Integer[] getClientPorts() { return clientPorts; }
 }

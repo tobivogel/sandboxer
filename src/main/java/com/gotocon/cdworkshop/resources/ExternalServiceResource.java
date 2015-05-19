@@ -16,6 +16,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Path("/services")
 public class ExternalServiceResource {
@@ -41,22 +42,22 @@ public class ExternalServiceResource {
         HashMap<String, Object> templateData = new HashMap<>();
         templateData.put("versionNumber", versionNumber);
 
-        final List<Integer> servicePorts = new ArrayList();
-        servicePorts.add(8092);
-        servicePorts.add(8094);
-        templateData.put("responses", contactExternalServices(servicePorts.toArray(new Integer[0])));
+        templateData.put("clients", contactExternalServices(configuration.getClientPorts()));
 
         return new FreemarkerView("sandboxer", templateData);
     }
 
-    private List<String> contactExternalServices(Integer... ports) {
-        List<String> responses = new ArrayList<>();
+    private List<Map<String, String>> contactExternalServices(Integer... ports) {
+        List<Map<String, String>> responses = new ArrayList<>();
         for (Integer port : ports) {
+            final HashMap<String, String> result = new HashMap<>();
+            result.put("port", port.toString());
             try {
-                responses.add(this.client.resource("http://localhost:" + port + "/json").accept(MediaType.APPLICATION_JSON_TYPE).get(HelloWorldVO.class).getText());
+                result.put("response", this.client.resource("http://localhost:" + port + "/json").accept(MediaType.APPLICATION_JSON_TYPE).get(HelloWorldVO.class).getText());
             } catch (UniformInterfaceException | ClientHandlerException e) {
-                responses.add(String.format("Service on port %d remains silent", port));
+                result.put("response", String.format("Service on port %d remains silent", port));
             }
+            responses.add(result);
         }
         return responses;
     }

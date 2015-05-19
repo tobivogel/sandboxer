@@ -14,20 +14,21 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
     <meta name="viewport" content="initial-scale=1.0, width=100%, maximum-scale=1, user-scalable=0">
+    <link rel="stylesheet" type="text/css" href="../assets/styles.css">
 </head>
 <body>
     <div id="main-container">
         Welcome, to the Sandboxer Service! You are using this service in version ${templateData.versionNumber}...
     </div>
-    <div>
-        see the service ports afterwards:
-        <#list templateData.responses as response>
-            <table>
-                <tr>
-                    <td>Response:</td>
-                    <td>${response}</td>
-                </tr>
-            </table>
+    see the service ports afterwards:
+    <div id="client-blocks">
+        <#list templateData.clients as client>
+            <div class="client-block">
+                <dl>
+                    <dt>Port:</dt><dd>${client.port}</dd>
+                    <dt>Response:</dt><dd>${client.response}</dd>
+                </dl>
+            </div>
         </#list>
     </div>
 </body>
