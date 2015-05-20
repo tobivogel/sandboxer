@@ -1,8 +1,9 @@
 package com.gotocon.cdworkshop.resources;
 
 import com.gotocon.cdworkshop.configuration.SandboxerServiceConfiguration;
-import com.gotocon.cdworkshop.connector.ServiceConnector;
+import com.gotocon.cdworkshop.connector.HttpServiceConnector;
 import com.gotocon.cdworkshop.views.FreemarkerView;
+import com.sun.jersey.api.client.ClientResponse;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,6 +12,8 @@ import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -19,12 +22,12 @@ public class ExampleHtmlResourceTest {
 
     private ExternalServiceResource externalServiceResource;
     private SandboxerServiceConfiguration serviceConfigurationMock;
-    private ServiceConnector serviceConnectorMock;
+    private HttpServiceConnector serviceConnectorMock;
 
     @Before
     public void setUp() {
         serviceConfigurationMock = mock(SandboxerServiceConfiguration.class);
-        serviceConnectorMock = mock(ServiceConnector.class);
+        serviceConnectorMock = mock(HttpServiceConnector.class);
         given(serviceConfigurationMock.getVersionNumber()).willReturn("20.2");
 
         externalServiceResource = new ExternalServiceResource(serviceConnectorMock, serviceConfigurationMock);
@@ -45,11 +48,12 @@ public class ExampleHtmlResourceTest {
     }
 
     @Test
-    public void shouldAddResponseFromClientToTemplate() throws Exception {
+    public void shouldAddHttpStatusAndResponseFromClientToTemplate() throws Exception {
         // Given
         final String someEndpoint = "http://some.endpoint.com";
         final String expectedResponse = "someResponse";
         given(serviceConfigurationMock.getClientEndpoints()).willReturn(new String[]{someEndpoint});
+        given(serviceConnectorMock.callEndpointForStatus(someEndpoint)).willReturn(ClientResponse.Status.OK.getStatusCode());
         given(serviceConnectorMock.callEndpointForClass(someEndpoint, HelloWorldVO.class)).willReturn(new HelloWorldVO(expectedResponse));
 
         // when
@@ -60,6 +64,27 @@ public class ExampleHtmlResourceTest {
         assertThat((List<?>) templateData.get("clients"), hasSize(1));
         final Map<String, String> clientResponse = ((List<Map<String, String>>) templateData.get("clients")).get(0);
         assertThat(clientResponse.get("endpoint"), is(someEndpoint));
+        assertThat(clientResponse.get("status"), is("OK"));
+        assertThat(clientResponse.get("statusCode"), is("200"));
         assertThat(clientResponse.get("response"), is(expectedResponse));
+    }
+
+    @Test
+    public void shouldAddCorrespondingHttpStatusFromClientIfUnavailable() throws Exception {
+        // Given
+        final String someEndpoint = "http://some.endpoint.com";
+        given(serviceConfigurationMock.getClientEndpoints()).willReturn(new String[]{someEndpoint});
+        given(serviceConnectorMock.callEndpointForStatus(someEndpoint)).willReturn(ClientResponse.Status.SERVICE_UNAVAILABLE.getStatusCode());
+
+        // when
+        final FreemarkerView actualView = (FreemarkerView)externalServiceResource.show();
+
+        // then
+        final Map templateData = (Map) actualView.getTemplateData();
+        assertThat((List<?>) templateData.get("clients"), hasSize(1));
+        final Map<String, String> clientResponse = ((List<Map<String, String>>) templateData.get("clients")).get(0);
+        assertThat(clientResponse.get("status"), is("NOK"));
+        assertThat(clientResponse.get("statusCode"), is("503"));
+        assertThat(clientResponse.get("response"), is(not(nullValue())));
     }
 }

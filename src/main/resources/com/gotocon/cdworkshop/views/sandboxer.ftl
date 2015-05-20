@@ -23,9 +23,10 @@
     see the service ports afterwards:
     <div id="client-blocks">
         <#list templateData.clients as client>
-            <div class="client-block">
+            <div class="client-block ${client.status}">
                 <dl>
                     <dt>Endpoint:</dt><dd>${client.endpoint}</dd>
+                    <dt>Status (HttpStatusCode):</dt><dd>${client.status} (${client.statusCode})</dd>
                     <dt>Response:</dt><dd>${client.response}</dd>
                 </dl>
             </div>

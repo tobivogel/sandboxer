@@ -2,10 +2,8 @@ package com.gotocon.cdworkshop.resources;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gotocon.cdworkshop.configuration.SandboxerServiceConfiguration;
-import com.gotocon.cdworkshop.connector.ServiceConnector;
+import com.gotocon.cdworkshop.connector.HttpServiceConnector;
 import com.gotocon.cdworkshop.views.FreemarkerView;
-import com.sun.jersey.api.client.ClientHandlerException;
-import com.sun.jersey.api.client.UniformInterfaceException;
 import com.yammer.dropwizard.views.View;
 import com.yammer.metrics.annotation.Timed;
 
@@ -18,15 +16,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.apache.http.HttpStatus.SC_OK;
+
 @Path("/services")
 public class ExternalServiceResource {
 
-    private final ServiceConnector serviceConnector;
+    private final HttpServiceConnector serviceConnector;
     private final SandboxerServiceConfiguration configuration;
 
-    public ExternalServiceResource(ServiceConnector serviceConnector, SandboxerServiceConfiguration configuration) {
+    public ExternalServiceResource(HttpServiceConnector httpServiceConnector, SandboxerServiceConfiguration configuration) {
         this.configuration = configuration;
-        this.serviceConnector = serviceConnector;
+        this.serviceConnector = httpServiceConnector;
     }
 
     @GET
@@ -52,10 +52,13 @@ public class ExternalServiceResource {
         for (String endpoint : clientEndpoints) {
             final HashMap<String, String> result = new HashMap<>();
             result.put("endpoint", endpoint);
-            try {
+            Integer httpStatusCode = serviceConnector.callEndpointForStatus(endpoint);
+            result.put("status", httpStatusCode == SC_OK ? "OK" : "NOK");
+            result.put("statusCode", httpStatusCode.toString());
+            if (httpStatusCode == SC_OK) {
                 HelloWorldVO helloWorldVO = serviceConnector.callEndpointForClass(endpoint, HelloWorldVO.class);
                 result.put("response", helloWorldVO.getText());
-            } catch (UniformInterfaceException | ClientHandlerException e) {
+            } else {
                 result.put("response", String.format("Service with endpoint %s remains silent", endpoint));
             }
             responses.add(result);
