@@ -42,12 +42,12 @@ public class ExternalServiceResource {
         HashMap<String, Object> templateData = new HashMap<>();
         templateData.put("versionNumber", versionNumber);
 
-        templateData.put("clients", contactExternalServices(configuration.getClientEndpoints()));
+        templateData.put("clients", fetchResponsesFromEndpoints(configuration.getClientEndpoints()));
 
         return new FreemarkerView("sandboxer", templateData);
     }
 
-    private List<Map<String, String>> contactExternalServices(String... clientEndpoints) {
+    private List<Map<String, String>> fetchResponsesFromEndpoints(String... clientEndpoints) {
         List<Map<String, String>> responses = new ArrayList<>();
         for (String endpoint : clientEndpoints) {
             final HashMap<String, String> result = new HashMap<>();

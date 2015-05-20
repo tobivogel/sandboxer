@@ -7,6 +7,10 @@ class HelloWorldVO {
         this.text = "Hello, World!";
     }
 
+    public HelloWorldVO(String text) {
+        this.text = text;
+    }
+
     public String getText() {
         return text;
     }
