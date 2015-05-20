@@ -25,7 +25,7 @@ public class ExampleHtmlResourceTest {
 //        given(webResourceMock.accept(any(MediaType.class))).willReturn(builderMock);
 
         given(serviceConfigurationMock.getVersionNumber()).willReturn("20.2");
-        given(serviceConfigurationMock.getClientPorts()).willReturn(new Integer[0]);
+        given(serviceConfigurationMock.getClientEndpoints()).willReturn(new String[0]);
 
         ExternalServiceResource externalServiceResource = new ExternalServiceResource(clientMock, serviceConfigurationMock);
 

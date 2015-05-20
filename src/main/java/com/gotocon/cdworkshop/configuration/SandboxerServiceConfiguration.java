@@ -24,8 +24,8 @@ public class SandboxerServiceConfiguration extends Configuration {
     private JerseyClientConfiguration httpClient = new JerseyClientConfiguration();
 
     @NotEmpty
-    @JsonProperty("clientPorts")
-    private Integer[] clientPorts = new Integer[0];
+    @JsonProperty("clientEndpoints")
+    private String[] clientEndpoints = new String[0];
 
     @JsonProperty("httpClient")
     public JerseyClientConfiguration getJerseyClientConfiguration() {
@@ -41,5 +41,5 @@ public class SandboxerServiceConfiguration extends Configuration {
         return loggingConfig;
     }
 
-    public Integer[] getClientPorts() { return clientPorts; }
+    public String[] getClientEndpoints() { return clientEndpoints; }
 }

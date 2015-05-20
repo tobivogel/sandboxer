@@ -25,7 +25,7 @@
         <#list templateData.clients as client>
             <div class="client-block">
                 <dl>
-                    <dt>Port:</dt><dd>${client.port}</dd>
+                    <dt>Endpoint:</dt><dd>${client.endpoint}</dd>
                     <dt>Response:</dt><dd>${client.response}</dd>
                 </dl>
             </div>

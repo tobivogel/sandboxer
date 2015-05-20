@@ -42,50 +42,24 @@ public class ExternalServiceResource {
         HashMap<String, Object> templateData = new HashMap<>();
         templateData.put("versionNumber", versionNumber);
 
-        templateData.put("clients", contactExternalServices(configuration.getClientPorts()));
+        templateData.put("clients", contactExternalServices(configuration.getClientEndpoints()));
 
         return new FreemarkerView("sandboxer", templateData);
     }
 
-    private List<Map<String, String>> contactExternalServices(Integer... ports) {
+    private List<Map<String, String>> contactExternalServices(String... clientEndpoints) {
         List<Map<String, String>> responses = new ArrayList<>();
-        for (Integer port : ports) {
+        for (String endpoint : clientEndpoints) {
             final HashMap<String, String> result = new HashMap<>();
-            result.put("port", port.toString());
+            result.put("endpoint", endpoint);
             try {
-                result.put("response", this.client.resource("http://localhost:" + port + "/json").accept(MediaType.APPLICATION_JSON_TYPE).get(HelloWorldVO.class).getText());
+                result.put("response", this.client.resource(endpoint).accept(MediaType.APPLICATION_JSON_TYPE).get(HelloWorldVO.class).getText());
+                result.put("response", this.client.resource(endpoint).accept(MediaType.APPLICATION_JSON_TYPE).get(HelloWorldVO.class).getText());
             } catch (UniformInterfaceException | ClientHandlerException e) {
-                result.put("response", String.format("Service on port %d remains silent", port));
+                result.put("response", String.format("Service with endpoint %s remains silent", endpoint));
             }
             responses.add(result);
         }
         return responses;
-    }
-
-    static class HelloWorldVO {
-        private String text;
-
-        public HelloWorldVO() {
-            this.text = "Hello, World!";
-        }
-
-        public String getText() {
-            return text;
-        }
-
-        @Override
-        public boolean equals(Object other) {
-            return org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals(this, other);
-        }
-
-        @Override
-        public int hashCode() {
-            return org.apache.commons.lang3.builder.HashCodeBuilder.reflectionHashCode(this);
-        }
-
-        @Override
-        public String toString() {
-            return org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString(this);
-        }
     }
 }
