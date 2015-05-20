@@ -2,8 +2,8 @@ package com.gotocon.cdworkshop.resources;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gotocon.cdworkshop.configuration.SandboxerServiceConfiguration;
+import com.gotocon.cdworkshop.connector.ServiceConnector;
 import com.gotocon.cdworkshop.views.FreemarkerView;
-import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientHandlerException;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.yammer.dropwizard.views.View;
@@ -21,12 +21,12 @@ import java.util.Map;
 @Path("/services")
 public class ExternalServiceResource {
 
-    private final Client client;
+    private final ServiceConnector serviceConnector;
     private final SandboxerServiceConfiguration configuration;
 
-    public ExternalServiceResource(Client client, SandboxerServiceConfiguration configuration) {
+    public ExternalServiceResource(ServiceConnector serviceConnector, SandboxerServiceConfiguration configuration) {
         this.configuration = configuration;
-        this.client = client;
+        this.serviceConnector = serviceConnector;
     }
 
     @GET
@@ -53,8 +53,8 @@ public class ExternalServiceResource {
             final HashMap<String, String> result = new HashMap<>();
             result.put("endpoint", endpoint);
             try {
-                result.put("response", this.client.resource(endpoint).accept(MediaType.APPLICATION_JSON_TYPE).get(HelloWorldVO.class).getText());
-                result.put("response", this.client.resource(endpoint).accept(MediaType.APPLICATION_JSON_TYPE).get(HelloWorldVO.class).getText());
+                HelloWorldVO helloWorldVO = serviceConnector.callEndpointForClass(endpoint, HelloWorldVO.class);
+                result.put("response", helloWorldVO.getText());
             } catch (UniformInterfaceException | ClientHandlerException e) {
                 result.put("response", String.format("Service with endpoint %s remains silent", endpoint));
             }

@@ -1,6 +1,7 @@
 package com.gotocon.cdworkshop;
 
 import com.gotocon.cdworkshop.configuration.SandboxerServiceConfiguration;
+import com.gotocon.cdworkshop.connector.ServiceConnector;
 import com.gotocon.cdworkshop.filters.LoggingFilter;
 import com.gotocon.cdworkshop.health.StatusHealthCheck;
 import com.gotocon.cdworkshop.logging.DropwizardLoggerFactory;
@@ -35,7 +36,7 @@ public class SandboxerService extends Service<SandboxerServiceConfiguration> {
         environment.addHealthCheck(new StatusHealthCheck(configuration));
 
         final Client client = new JerseyClientBuilder().using(environment).using(configuration.getJerseyClientConfiguration()).build();
-        environment.addResource(new ExternalServiceResource(client, configuration));
+        environment.addResource(new ExternalServiceResource(new ServiceConnector(client), configuration));
 
         environment.addFilter(new LoggingFilter(), baseUrlFor(ExternalServiceResource.class));
     }
