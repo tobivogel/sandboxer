@@ -3,6 +3,7 @@ package com.gotocon.cdworkshop.resources;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gotocon.cdworkshop.configuration.SandboxerServiceConfiguration;
 import com.gotocon.cdworkshop.connector.HttpServiceConnector;
+import com.gotocon.cdworkshop.model.WebsiteFragmentVO;
 import com.gotocon.cdworkshop.views.FreemarkerView;
 import com.yammer.dropwizard.views.View;
 import com.yammer.metrics.annotation.Timed;
@@ -56,10 +57,14 @@ public class ExternalServiceResource {
             result.put("status", httpStatusCode == SC_OK ? "OK" : "NOK");
             result.put("statusCode", httpStatusCode.toString());
             if (httpStatusCode == SC_OK) {
-                HelloWorldVO helloWorldVO = serviceConnector.callEndpointForClass(endpoint, HelloWorldVO.class);
-                result.put("response", helloWorldVO.getText());
+                WebsiteFragmentVO fragment = serviceConnector.callEndpointForClass(endpoint, WebsiteFragmentVO.class);
+                result.put("author", fragment.getAuthor());
+                result.put("comment", fragment.getComment());
+                result.put("payload", fragment.getHtmlPayload());
             } else {
-                result.put("response", String.format("Service with endpoint %s remains silent", endpoint));
+                result.put("author", "sandboxer");
+                result.put("comment", String.format("Service with endpoint %s remains silent", endpoint));
+                result.put("payload", "<strong>service not available</strong>");
             }
             responses.add(result);
         }

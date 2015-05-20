@@ -27,7 +27,9 @@
                 <dl>
                     <dt>Endpoint:</dt><dd>${client.endpoint}</dd>
                     <dt>Status (HttpStatusCode):</dt><dd>${client.status} (${client.statusCode})</dd>
-                    <dt>Response:</dt><dd>${client.response}</dd>
+                    <dt>Author:</dt><dd>${client.author}</dd>
+                    <dt>Comment:</dt><dd>${client.comment}</dd>
+                    <dt>Payload:</dt><dd>${client.payload}</dd>
                 </dl>
             </div>
         </#list>

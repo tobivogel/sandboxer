@@ -5,7 +5,7 @@ http:
 versionNumber: 1.0
 
 clientEndpoints:
- - "http://localhost:8092/json"
+ - "http://localhost:8092/provider"
  - "http://localhost:8094/json"
  - "http://localhost:8096/json"
  - "http://localhost:8098/json"

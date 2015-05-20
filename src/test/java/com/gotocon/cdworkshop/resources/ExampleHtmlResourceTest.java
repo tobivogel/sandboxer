@@ -2,6 +2,7 @@ package com.gotocon.cdworkshop.resources;
 
 import com.gotocon.cdworkshop.configuration.SandboxerServiceConfiguration;
 import com.gotocon.cdworkshop.connector.HttpServiceConnector;
+import com.gotocon.cdworkshop.model.WebsiteFragmentVO;
 import com.gotocon.cdworkshop.views.FreemarkerView;
 import com.sun.jersey.api.client.ClientResponse;
 import org.junit.Before;
@@ -11,9 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -51,10 +50,12 @@ public class ExampleHtmlResourceTest {
     public void shouldAddHttpStatusAndResponseFromClientToTemplate() throws Exception {
         // Given
         final String someEndpoint = "http://some.endpoint.com";
-        final String expectedResponse = "someResponse";
+        final String expectedAuthor = "me";
+        final String expectedComment = "nothing";
+        final String expectedPayload = "someHTML";
         given(serviceConfigurationMock.getClientEndpoints()).willReturn(new String[]{someEndpoint});
         given(serviceConnectorMock.callEndpointForStatus(someEndpoint)).willReturn(ClientResponse.Status.OK.getStatusCode());
-        given(serviceConnectorMock.callEndpointForClass(someEndpoint, HelloWorldVO.class)).willReturn(new HelloWorldVO(expectedResponse));
+        given(serviceConnectorMock.callEndpointForClass(someEndpoint, WebsiteFragmentVO.class)).willReturn(new WebsiteFragmentVO(expectedAuthor, expectedComment, expectedPayload));
 
         // when
         final FreemarkerView actualView = (FreemarkerView)externalServiceResource.show();
@@ -66,7 +67,9 @@ public class ExampleHtmlResourceTest {
         assertThat(clientResponse.get("endpoint"), is(someEndpoint));
         assertThat(clientResponse.get("status"), is("OK"));
         assertThat(clientResponse.get("statusCode"), is("200"));
-        assertThat(clientResponse.get("response"), is(expectedResponse));
+        assertThat(clientResponse.get("author"), is(expectedAuthor));
+        assertThat(clientResponse.get("comment"), is(expectedComment));
+        assertThat(clientResponse.get("payload"), is(expectedPayload));
     }
 
     @Test
@@ -85,6 +88,8 @@ public class ExampleHtmlResourceTest {
         final Map<String, String> clientResponse = ((List<Map<String, String>>) templateData.get("clients")).get(0);
         assertThat(clientResponse.get("status"), is("NOK"));
         assertThat(clientResponse.get("statusCode"), is("503"));
-        assertThat(clientResponse.get("response"), is(not(nullValue())));
+        assertThat(clientResponse.get("author"), is(not(nullValue())));
+        assertThat(clientResponse.get("comment"), is(not(nullValue())));
+        assertThat(clientResponse.get("payload"), is(not(nullValue())));
     }
 }
