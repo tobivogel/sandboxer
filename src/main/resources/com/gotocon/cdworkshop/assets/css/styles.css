@@ -33,9 +33,9 @@ h1 {
 
 .panel {
     float: left;
-    width: 300px;
-    height: 300px;
-    margin: -20px;
+    width: 375px;
+    height: 375px;
+    margin: -45px;
     position: relative;
 }
 
@@ -59,8 +59,8 @@ h1 {
     top: 0;
     left: 0;
     z-index: 100;
-    width: 350px;
-    height: 350px;
+    width: 375px;
+    height: 375px;
     border: 1px solid #aaa;
     border-top: 1px solid #888;
     border-left: 1px solid #888;
