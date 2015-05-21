@@ -14,25 +14,30 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
     <meta name="viewport" content="initial-scale=1.0, width=100%, maximum-scale=1, user-scalable=0">
-    <link rel="stylesheet" type="text/css" href="../assets/styles.css">
+    <link rel="stylesheet" type="text/css" href="../assets/css/styles.css">
 </head>
 <body>
-    <div id="main-container">
-        Welcome, to the Sandboxer Service! You are using this service in version ${templateData.versionNumber}...
-    </div>
-    see the service ports afterwards:
-    <div id="client-blocks">
-        <#list templateData.clients as client>
-            <div class="client-block ${client.status}">
-                <dl>
-                    <dt>Endpoint:</dt><dd>${client.endpoint}</dd>
-                    <dt>Status (HttpStatusCode):</dt><dd>${client.status} (${client.statusCode})</dd>
-                    <dt>Author:</dt><dd>${client.author}</dd>
-                    <dt>Comment:</dt><dd>${client.comment}</dd>
-                    <dt>Payload:</dt><dd>${client.payload}</dd>
-                </dl>
-            </div>
-        </#list>
+    <div id="container">
+        <h1>Sandboxer</h1>
+        <h3>GOTO Amsterdam 2015 - CD Workshop</h3>
+        <p class="intro">
+           Some nice words here
+        </p>
+        <div id="client-blocks">
+            <#list templateData.clients as client>
+                <div class="client-block panel">
+                    <div class="hover ${client.status}">
+                        <dl>
+                            <dt>Endpoint:</dt><dd>${client.endpoint}</dd>
+                            <dt>Status (HttpStatusCode):</dt><dd>${client.status} (${client.statusCode})</dd>
+                            <dt>Author:</dt><dd>${client.author}</dd>
+                            <dt>Comment:</dt><dd>${client.comment}</dd>
+                            <dt>Payload:</dt><dd>${client.payload}</dd>
+                        </dl>
+                    </div>
+                </div>
+            </#list>
+        </div>
     </div>
 </body>
 </html>

@@ -6,10 +6,10 @@ versionNumber: 1.0
 
 clientEndpoints:
  - "http://localhost:8092/provider"
- - "http://localhost:8094/json"
- - "http://localhost:8096/json"
- - "http://localhost:8098/json"
- - "http://localhost:8100/json"
+ - "http://localhost:8094/provider"
+ - "http://localhost:8096/provider"
+ - "http://localhost:8098/provider"
+ - "http://localhost:8100/provider"
 
 logging:
   appenders:
