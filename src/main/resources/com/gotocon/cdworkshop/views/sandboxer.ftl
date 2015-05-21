@@ -4,7 +4,7 @@
 <html class="no-js" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html"
       xmlns="http://www.w3.org/1999/html"> <!--<![endif]-->
 <head>
-    <title>Sandboxer Html Page</title>
+    <title>Sandboxer - GOTO Amsterdam 2015</title>
     <meta charset="ISO-8859-1">
     <meta name="description" content="">
     <meta name="HandheldFriendly" content="True">
@@ -21,7 +21,7 @@
         <h1>Sandboxer</h1>
         <h3>GOTO Amsterdam 2015 - CD Workshop</h3>
         <p class="intro">
-           Some nice words here
+           You're looking at the Sandboxer, an application to find them, integrate them all and in the html bind them. The Sandboxer currently runs in version ${templateData.versionNumber}.
         </p>
         <div id="client-blocks">
             <#list templateData.clients as client>
