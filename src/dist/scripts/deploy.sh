@@ -1,14 +1,15 @@
 #!/bin/bash
 
-LIB_DIR=`pwd`
-SERVICE_ROOT=$LIB_DIR/../../../
-source $LIB_DIR/common.sh
+SERVICE_NAME="sandboxer"
+GO_PIPELINE_NAME=${GO_PIPELINE_NAME-local}
 
-echo "create $SERVICE_NAME service fatJar"
-cd SERVICE_ROOT
-./gradlew clean fatJar
+echo "copy files for dist.zip"
+cp ./src/dist/config/dev.yml config-$SERVICE_NAME.yml
+cp ./build/libs/SERVICE_NAME-fat.jar app-$SERVICE_NAME.jar
 
-echo "copy jar and config file to deploy folder"
-cd $SERVICE_ROOT
-cp ./src/dist/config/dev.yml $DEPLOY_DIR/$SERVICE_NAME-config.yml
-cp ./build/libs/sandboxerService-fat.jar $DEPLOY_DIR/$SERVICE_NAME-service.jar
+echo "create dist.zip"
+zip dist-$SERVICE_NAME.zip config-$SERVICE_NAME.yml app-$SERVICE_NAME.jar
+
+echo "deploy dist.zip (wherever)"
+# need an ssh key
+scp -i /root/.ssh/id_rsa -o "StrictHostKeyChecking no" dist-$SERVICE_NAME.zip vagrant@12.12.12.12:/prod
