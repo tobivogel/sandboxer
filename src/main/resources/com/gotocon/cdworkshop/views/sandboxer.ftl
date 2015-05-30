@@ -23,9 +23,9 @@
         <p class="intro">
            You're looking at the Sandboxer, an application to find them, integrate them all and in the html bind them. The Sandboxer currently runs in version ${templateData.versionNumber}.
         </p>
-        <div id="client-blocks">
+        <div>
             <#list templateData.clients as client>
-                <div class="client-block panel">
+                <div class="panel">
                     <div class="hover ${client.status}">
                         <dl>
                             <dt>Endpoint:</dt><dd>${client.endpoint}</dd>
