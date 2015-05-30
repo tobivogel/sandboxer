@@ -1,10 +1,10 @@
 #!/bin/bash
 
-SERVICE_NAME="sandboxer"
+SERVICE_NAME=${SERVICE_NAME-unknown}
 
 echo "copy files for dist.zip"
-cp ./src/dist/config/dev.yml config-$SERVICE_NAME.yml
-cp ./build/libs/*-fat.jar app-$SERVICE_NAME.jar
+cp ./src/dist/config/services/$SERVICE_NAME.yml config-$SERVICE_NAME.yml
+cp ./dist/*-fat.jar app-$SERVICE_NAME.jar
 
 echo "create dist.zip"
 zip dist-$SERVICE_NAME.zip config-$SERVICE_NAME.yml app-$SERVICE_NAME.jar
