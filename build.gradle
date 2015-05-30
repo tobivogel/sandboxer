@@ -81,6 +81,13 @@ test {
     }
 }
 
+task copyConfigFiles(type: Copy) {
+    from 'src/dist/config'
+    into 'build/libs'
+}
+
+task buildFatJar(dependsOn: [fatJar, copyConfigFiles]) {
+}
 
 // Hide output subfolders from IntelliJ for each subproject
 idea {
