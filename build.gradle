@@ -81,12 +81,58 @@ test {
     }
 }
 
-task copyConfigFiles(type: Copy) {
-    from 'src/dist/config'
-    into 'build/libs'
+task copyFatJar(type: Copy, dependsOn: fatJar) {
+    outputs.upToDateWhen { false }
+    from 'build/libs'
+    into 'build/dist'
+    include "**/*.jar"
 }
 
-task buildFatJar(dependsOn: [fatJar, copyConfigFiles]) {
+task copyConfigFiles(type: Copy) {
+    outputs.upToDateWhen { false }
+    from 'src/dist/config'
+    into 'build/dist/config'
+    include "**/*.yml"
+    eachFile {
+        def configFileName = it.name
+        println("Creating start and stop scripts for: $configFileName")
+        def scriptDir = "${projectDir}/build/dist/scripts"
+        def baseFileName = configFileName.substring(0, configFileName.indexOf('.')) + ".sh"
+        def startScriptName = "start_" + baseFileName
+        def stopScriptName = "stop_" + baseFileName
+
+        def startScriptContent =
+                '''#!/bin/bash
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/..
+
+nohup java -jar $DIR/sandboxer-fat.jar server $DIR/config/''' + configFileName + ''' &> /dev/null &'''
+
+        def stopScriptContent =
+                '''#!/bin/bash
+`kill \\`ps -ef | grep ''' + configFileName + ''' | grep -v grep | awk '{print $2}'\\``'''
+
+        new File(scriptDir).mkdirs()
+
+        def runner = new File("${scriptDir}/$startScriptName")
+        runner.withWriter() { it << startScriptContent }
+        runner.executable = true
+
+        def stopper = new File("${scriptDir}/$stopScriptName")
+        stopper.withWriter() { it << stopScriptContent }
+        stopper.executable = true
+    }
+}
+
+task buildDist(dependsOn: [copyFatJar, copyConfigFiles]) {
+}
+
+task healthcheck(type:Exec) {
+    def url = 'http://localhost:8091/healthcheck'
+    executable = 'curl'
+    args = ['-fsS', url, '-m', '10']
+    doFirst {
+        println "Checking Service for healthiness: $url.\nExit code 28 indicates a timeout/service not available, exit code 22 means the service is up but unhealthy."
+    }
 }
 
 // Hide output subfolders from IntelliJ for each subproject
