@@ -23,6 +23,8 @@ task wrapper(type: Wrapper) {
 // Set our project variables
 project.ext {
     dropwizardVersion = '0.6.2'
+
+    serviceName = 'sandboxer'
 }
 
 // The main class of the application
@@ -52,7 +54,7 @@ dependencies {
 
 // Configure the fatJar task
 fatJar {
-    classifier 'fat'
+    baseName serviceName
 
     // We need to add the main class to the manifest, otherwise the JAR won't start.
     manifest {
@@ -105,7 +107,7 @@ task copyConfigFiles(type: Copy) {
                 '''#!/bin/bash
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/..
 
-nohup java -jar $DIR/sandboxer-fat.jar server $DIR/config/''' + configFileName + ''' &> /dev/null &'''
+nohup java -jar $DIR//''' + serviceName + '''.jar server $DIR/config/''' + configFileName + ''' &> /dev/null &'''
 
         def stopScriptContent =
                 '''#!/bin/bash
