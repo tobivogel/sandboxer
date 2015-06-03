@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SERVICE_NAME=${SERVICE_NAME-goto-services}
+SERVICE_NAME=${SERVICE_NAME-sandboxer}
 
 STAGE=${STAGE-dev}
 STAGE=$(echo $STAGE | tr '[A-Z]' '[a-z]')
