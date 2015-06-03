@@ -117,11 +117,9 @@ nohup java -jar $DIR//''' + serviceName + '''.jar server $DIR/config/''' + confi
 
         def runner = new File("${scriptDir}/$startScriptName")
         runner.withWriter() { it << startScriptContent }
-        runner.executable = true
 
         def stopper = new File("${scriptDir}/$stopScriptName")
         stopper.withWriter() { it << stopScriptContent }
-        stopper.executable = true
     }
 }
 

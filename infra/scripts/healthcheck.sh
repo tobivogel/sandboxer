@@ -1,6 +1,6 @@
 #!/bin/bash
 
-HOST=${HOST-localhost:8091}
+HEALTHCHECK_HOST=${HEALTHCHECK_HOST-localhost:8091}
 
 status="fail"
 max_checks=10
