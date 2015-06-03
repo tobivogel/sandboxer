@@ -9,7 +9,7 @@ set +e
 for i in `seq 1 $max_checks`; do
   echo "${i}. try"
 
-  out=`curl -fsS --max-time 5 "http://$HOST/healthcheck"`
+  out=`curl -fsS --max-time 5 "http://$HEALTHCHECK_HOST/healthcheck"`
 
   if [ $? -eq 0 ]; then
     status="success"
